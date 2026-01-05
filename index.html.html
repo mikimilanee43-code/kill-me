@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balkan-Hütte - Seit 1980</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: #fff;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .nav-left, .nav-right {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .logo {
+            height: 80px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+
+        nav a:hover {
+            color: #C41E3A;
+        }
+
+        /* Sections */
+        section {
+            min-height: 50vh;
+        }
+
+        /* Home Section */
+        #home {
+            background-color: #f5f5f5;
+            padding: 4rem 2rem;
+        }
+
+        .hero {
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 1000px;
+            height: 400px;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            margin-bottom: 2rem;
+        }
+
+        .hero-text h1 {
+            font-size: 2.5rem;
+            color: #C41E3A;
+            margin-bottom: 1rem;
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .about {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .about h2 {
+            font-size: 2rem;
+            color: #C41E3A;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .about p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            text-align: justify;
+        }
+
+        .hours {
+            background-color: #C41E3A;
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .hours h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .hours-content {
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            line-height: 2;
+        }
+
+        /* Restaurant Section */
+        #restaurant {
+            background-color: #fff;
+            padding: 4rem 2rem;
+        }
+
+        .section-header {
+            background-color: #C41E3A;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+        }
+
+        .restaurant-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .restaurant-hero {
+            margin-bottom: 3rem;
+        }
+
+        .restaurant-image-large {
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .restaurant-image-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .restaurant-text {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .restaurant-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .restaurant-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .restaurant-card {
+            background-color: #f9f9f9;
+            overflow: hidden;
+        }
+
+        .restaurant-image {
+            width: 100%;
+            height: 250px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-gallery {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: transform 1.5s ease-in-out, opacity 1.5s ease-in-out;
+        }
+
+        .gallery-image.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .gallery-image.exit {
+            transform: translateX(-100%);
+        }
+
+        .gallery-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .gallery-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .gallery-dot.active {
+            background-color: #C41E3A;
+        }
+
+        .restaurant-card-text {
+            padding: 1.5rem;
+        }
+
+        .restaurant-card-text h3 {
+            color: #C41E3A;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .restaurant-card-text p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Speisekarte Section */
+        #speisekarte {
+            background-color: #f5f5f5;
+            padding: 4rem 2rem;
+        }
+
+        .slideshow-container {
+            max-width: 1000px;
+            margin: 0 auto 3rem;
+            position: relative;
+        }
+
+        .slideshow-wrapper {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            background-color: #ddd;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 1.5rem;
+            background-color: #ddd;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slideshow-controls {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .dot {
+            height: 15px;
+            width: 15px;
+            margin: 0 5px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .dot.active {
+            background-color: #C41E3A;
+        }
+
+        .prev, .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            padding: 1rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+            border: none;
+        }
+
+        .prev:hover, .next:hover {
+            background-color: rgba(196,30,58,0.8);
+        }
+
+        .prev { left: 10px; }
+        .next { right: 10px; }
+
+        .menu-cards-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .menu-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .menu-card {
+            background-color: #fff;
+            border: 2px solid #ddd;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+
+        .menu-card:hover {
+            background-color: #C41E3A;
+            border-color: #C41E3A;
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .menu-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-card p {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .menu-card-single {
+            grid-column: 1 / -1;
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .pdf-viewer-section {
+            background-color: #fff;
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .pdf-section {
+            background-color: white;
+            border: 2px solid #ddd;
+        }
+
+        .pdf-header {
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .pdf-header:hover {
+            background-color: #C41E3A;
+            color: white;
+        }
+
+        .pdf-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .pdf-arrow {
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .pdf-arrow.open {
+            transform: rotate(180deg);
+        }
+
+        .pdf-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .pdf-content.open {
+            max-height: 800px;
+        }
+
+        .pdf-content-inner {
+            padding: 2rem;
+        }
+
+        .pdf-content-inner iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+
+        /* Reservierung Section */
+        #reservierung {
+            background-color: #fff;
+            padding: 4rem 2rem;
+        }
+
+        .reservation-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reservation-box {
+            background-color: white;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .reservation-box h3 {
+            color: #C41E3A;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .reservation-box p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        .phone-number {
+            color: #C41E3A;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .phone-number:hover {
+            text-decoration: underline;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #C41E3A;
+        }
+
+        .hours-box {
+            background-color: #C41E3A;
+            color: white;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .hours-box h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Anfahrt Section */
+        #anfahrt {
+            background-color: #f5f5f5;
+            padding: 4rem 2rem;
+        }
+
+        .map-section {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto 3rem;
+            height: 500px;
+            background-color: #ddd;
+        }
+
+        .map-section iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .contact-info-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-info-box {
+            background-color: white;
+            padding: 3rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-top: 4px solid #C41E3A;
+        }
+
+        .contact-info-box h3 {
+            color: #C41E3A;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #C41E3A;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-text {
+            color: #555;
+            font-size: 1.2rem;
+        }
+
+        /* Kontakt Section */
+        #kontakt {
+            background-color: #fff;
+            padding: 4rem 2rem;
+        }
+
+        .contact-section {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .contact-box {
+            background-color: #f9f9f9;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            border-left: 4px solid #C41E3A;
+        }
+
+        .contact-box h3 {
+            color: #C41E3A;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-box p {
+            font-size: 1.3rem;
+            color: #555;
+        }
+
+        .contact-box a {
+            color: #C41E3A;
+            text-decoration: none;
+            font-size: 1.3rem;
+        }
+
+        .contact-box a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #f5f5f5;
+            padding: 2rem;
+            border-top: 1px solid #ddd;
+        }
+
+        .footer-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .footer-section {
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            background-color: white;
+        }
+
+        .footer-header {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .footer-header:hover {
+            background-color: #C41E3A;
+            color: white;
+        }
+
+        .footer-header h4 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .footer-arrow {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .footer-arrow.open {
+            transform: rotate(180deg);
+        }
+
+        .footer-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .footer-content.open {
+            max-height: 3000px;
+        }
+
+        .footer-content-inner {
+            padding: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .footer-content-inner h5 {
+            color: #C41E3A;
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-content-inner h5:first-child {
+            margin-top: 0;
+        }
+
+        .footer-content-inner p {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-content-inner ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-content-inner a {
+            color: #C41E3A;
+            text-decoration: underline;
+        }
+
+        .contact-box-footer {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 3px solid #C41E3A;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-left, .nav-right {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .restaurant-grid, .menu-cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .slideshow-wrapper {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="#home">HOME</a>
+                <a href="#restaurant">RESTAURANT</a>
+                <a href="#speisekarte">SPEISEKARTE</a>
+            </div>
+            <div class="nav-center">
+                <img src="https://i.ibb.co/8gYQDNh6/balkan-huette-logo-seit1980.jpg" alt="Balkan-Hütte Logo" class="logo">
+            </div>
+            <div class="nav-right">
+                <a href="#reservierung">RESERVIERUNG</a>
+                <a href="#anfahrt">ANFAHRT</a>
+                <a href="#kontakt">KONTAKT</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HOME SECTION -->
+    <section id="home">
+        <div class="hero">
+            <div class="hero-image">[Bild vom Essen oder Ambiente]</div>
+            <div class="hero-text">
+                <h1>Herzlich Willkommen</h1>
+                <p>Genießen Sie authentische Balkan-Küche in familiärer Atmosphäre</p>
+            </div>
+        </div>
+
+        <div class="about">
+            <h2>Über Uns</h2>
+            <p>Vor über 45 Jahren in Habenhausen eröffnet, erstrahlt die Balkan-Hütte heute in frischem Ambiente. Die Familie Zdravkovic verwöhnt ihre Gäste mit köstlichen, frisch zubereiteten Spezialitäten vom Balkan – darunter Grillteller, Ćevapčići und ein guter Sliwowitz. Genießen Sie die entspannte Atmosphäre und den herzlichen Service in unserem traditionsreichen Familienrestaurant.</p>
+        </div>
+
+        <div class="hours">
+            <h2>Öffnungszeiten</h2>
+            <div class="hours-content">
+                <p><strong>Montag:</strong> Ruhetag (außer an Feiertagen)</p>
+                <p><strong>Dienstag–Samstag:</strong> 17:30 – 22:00 Uhr</p>
+                <p><strong>Sonntag/Feiertage:</strong> 12:00 – 14:30 Uhr, 17:30 – 22:00 Uhr</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- RESTAURANT SECTION -->
+    <section id="restaurant">
+        <div class="section-header">
+            <h2>Unser Restaurant</h2>
+        </div>
+
+        <div class="restaurant-container">
+            <div class="restaurant-hero">
+                <div class="restaurant-image-large">
+                    <img src="https://i.ibb.co/My3WkCZ2/IMG-7253.jpg" alt="Eingang">
+                </div>
+                <div class="restaurant-text">
+                    <p>Treten Sie ein in unsere gemütliche Balkan-Hütte, wo traditionelle Gastfreundschaft auf authentische Küche trifft. Unsere warme Atmosphäre lädt Sie ein, unvergessliche Momente mit Familie und Freunden zu genießen.</p>
+                </div>
+            </div>
+            
+            <div class="restaurant-grid">
+                <div class="restaurant-card">
+                    <div class="restaurant-image">
+                        <div class="image-gallery" id="interior-gallery">
+                            <div class="gallery-image active">
+                                <img src="https://i.ibb.co/MxVs8gby/IMG-7251.jpg" alt="Interior 1">
+                            </div>
+                            <div class="gallery-image">
+                                <img src="https://i.ibb.co/0kWs0qJ/IMG-7250.jpg" alt="Interior 2">
+                            </div>
+                            <div class="gallery-image">
+                                <img src="https://i.ibb.co/20szpHDG/IMG-7248.jpg" alt="Interior 3">
+                            </div>
+                            <div class="gallery-dots">
+                                <span class="gallery-dot active" onclick="showGalleryImage('interior', 0)"></span>
+                                <span class="gallery-dot" onclick="showGalleryImage('interior', 1)"></span>
+                                <span class="gallery-dot" onclick="showGalleryImage('interior', 2)"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="restaurant-card-text">
+                        <h3>Unser Restaurant</h3>
+                        <p>Gemütliche Atmosphäre mit rustikalem Charme. Platz für bis zu 70 Gäste in unserem Hauptraum und separatem Bereich für private Feiern.</p>
+                    </div>
+                </div>
+                
+                <div class="restaurant-card">
+                    <div class="restaurant-image">
+                        <div class="image-gallery" id="events-gallery">
+                            <div class="gallery-image active">
+                                <img src="https://i.ibb.co/R1hZpD3/IMG-7271.jpg" alt="Event 1">
+                            </div>
+                            <div class="gallery-image">
+                                <img src="https://i.ibb.co/fY2XbjWc/IMG-7273.jpg" alt="Event 2">
+                            </div>
+                            <div class="gallery-image">
+                                <img src="https://i.ibb.co/mVrdknwK/IMG-7274.jpg" alt="Event 3">
+                            </div>
+                            <div class="gallery-dots">
+                                <span class="gallery-dot active" onclick="showGalleryImage('events', 0)"></span>
+                                <span class="gallery-dot" onclick="showGalleryImage('events', 1)"></span>
+                                <span class="gallery-dot" onclick="showGalleryImage('events', 2)"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="restaurant-card-text">
+                        <h3>Events & Feiern</h3>
+                        <p>Feiern Sie besondere Anlässe bei uns: Geburtstage, Firmenfeiern, Hochzeiten und mehr. Wir gestalten Ihren Tag unvergesslich.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SPEISEKARTE SECTION -->
+    <section id="speisekarte">
+        <div class="section-header">
+            <h2>Unsere Speisekarte</h2>
+        </div>
+
+        <div class="slideshow-container">
+            <div class="slideshow-wrapper">
+                <div class="slide active">[Bild vom Essen 1]</div>
+                <div class="slide">[Bild vom Essen 2]</div>
+                <div class="slide">[Bild vom Essen 3]</div>
+                <button class="prev" onclick="changeSlide(-1)">❮</button>
+                <button class="next" onclick="changeSlide(1)">❯</button>
+            </div>
+            <div class="slideshow-controls">
+                <span class="dot active" onclick="currentSlide(0)"></span>
+                <span class="dot" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(2)"></span>
+            </div>
+        </div>
+
+        <div class="menu-cards-container">
+            <div class="menu-cards-grid">
+                <a href="speisekarte.pdf" class="menu-card" target="_blank">
+                    <h3>Speisekarte</h3>
+                    <p>PDF öffnen</p>
+                </a>
+                <a href="kinderkarte.pdf" class="menu-card" target="_blank">
+                    <h3>Kinderkarte</h3>
+                    <p>PDF öffnen</p>
+                </a>
+            </div>
+        </div>
+
+        <div class="pdf-viewer-section">
+            <div class="pdf-section">
+                <div class="pdf-header" onclick="togglePDF('getraenke')">
+                    <h3>Getränkekarte</h3>
+                    <span class="pdf-arrow" id="getraenke-arrow">▼</span>
+                </div>
+                <div class="pdf-content" id="getraenke-content">
+                    <div class="pdf-content-inner">
+                        <iframe src="https://getraenkekarte-pdf.tiiny.site" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RESERVIERUNG SECTION -->
+    <section id="reservierung">
+        <div class="section-header">
+            <h2>Reservierung</h2>
+        </div>
+
+        <div class="reservation-container">
+            <div class="reservation-box">
+                <h3>Tischreservierung</h3>
+                <p>Reservierungen und Gerichte zum Mitnehmen werden ab <span class="highlight">17:00 Uhr</span> telefonisch angenommen.</p>
+                <p style="text-align: center; margin-top: 2rem;">
+                    <strong>TELEFON:</strong> <a href="tel:+494218331350" class="phone-number">0421-833135</a>
+                </p>
+                <p style="margin-top: 2rem;">Für Feiern, Familienereignisse oder Events mit über 8 Personen sprechen Sie uns bitte frühzeitig an.</p>
+            </div>
+
+            <div class="hours-box">
+                <h3>Öffnungszeiten</h3>
+                <div class="hours-content">
+                    <p><strong>Montag:</strong> Ruhetag (außer an Feiertagen)</p>
+                    <p><strong>Dienstag–Samstag:</strong> 17:30 – 22:00 Uhr</p>
+                    <p><strong>Sonntag/Feiertage:</strong> 12:00 – 14:30 Uhr, 17:30 – 22:00 Uhr</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ANFAHRT SECTION -->
+    <section id="anfahrt">
+        <div class="section-header">
+            <h2>So finden Sie uns</h2>
+        </div>
+
+        <div class="map-section">
+            <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Landauer+Weg+31,+28279+Bremen,+Habenhausen&zoom=15" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+
+        <div class="contact-info-container">
+            <div class="contact-info-box">
+                <h3>Balkan-Hütte</h3>
+                <div class="info-item">
+                    <div class="info-label">Adresse</div>
+                    <div class="info-text">Landauer Weg 31</div>
+                    <div class="info-text">28279 Bremen</div>
+                </div>
+            </div
